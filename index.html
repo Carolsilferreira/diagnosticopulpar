@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist de Diagnóstico Pulpar</title>
+<style>
+  :root {
+    --teal: #0e7c86;
+    --teal-light: #e7f6f7;
+    --bg: #f5f9f9;
+    --card: #ffffff;
+    --text: #2b2b2b;
+    --muted: #6b7a7c;
+    --border: #dce8e8;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 16px;
+    padding-bottom: 100px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  header h1 {
+    font-size: 19px;
+    color: var(--teal);
+    margin: 0 0 4px 0;
+    letter-spacing: 0.5px;
+  }
+  header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .section {
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .section-header {
+    background: var(--teal-light);
+    color: var(--teal);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .question {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .question:last-child { border-bottom: none; }
+  .question p.q-text {
+    font-size: 13.5px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  label.opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    cursor: pointer;
+    background: #fbfdfd;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  label.opt:active { background: var(--teal-light); }
+  input[type="radio"] {
+    margin: 2px 0 0 0;
+    accent-color: var(--teal);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+  label.opt.selected {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    font-weight: 600;
+  }
+
+  /* Result panel */
+  #result {
+    position: sticky;
+    bottom: 0;
+    margin-top: 16px;
+    background: var(--card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+    padding: 14px;
+  }
+  #result h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin: 0 0 8px 0;
+  }
+  .diag-card {
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .diag-card .note {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    margin-top: 3px;
+    opacity: 0.92;
+  }
+  .diag-card.empty {
+    background: #eef3f3;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 12.5px;
+  }
+  .c-normal { background:#4caf50; }
+  .c-rev { background:#8bc34a; color:#27361a; }
+  .c-irrev-a { background:#ffb300; color:#3a2c00; }
+  .c-irrev-s { background:#f4511e; }
+  .c-necrose { background:#6d4c41; }
+  .c-periapical { background:#1976d2; }
+  .c-warn { background:#90a4ae; }
+
+  .reset-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+  .reset-btn:active { background: var(--teal-light); }
+
+  .disclaimer {
+    font-size: 10.5px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Checklist de Anamnese — Diagnóstico Pulpar</h1>
+  <p>Marque os achados clínicos para ver o diagnóstico mais provável</p>
+</header>
+
+<div class="section">
+  <div class="section-header">Sintomatologia</div>
+  <div class="question">
+    <p class="q-text">1. Há dor espontânea / intermitente, sem necessidade de estímulo?</p>
+    <div class="options" data-group="dorEspontanea">
+      <label class="opt"><input type="radio" name="dorEspontanea" value="sim"> Sim</label>
+      <label class="opt"><input type="radio" name="dorEspontanea" value="nao"> Não</label>
+    </div>
+  </div>
+  <div class="question">
+    <p class="q-text">2. Resposta ao teste de frio (sensibilidade)</p>
+    <div class="options" data-group="frio">
+      <label class="opt"><input type="radio" name="frio" value="ausente"> Sem resposta (negativa)</label>
+      <label class="opt"><input type="radio" name="frio" value="rapido"> Leve/moderada, desaparece rápido após o estímulo</label>
+      <label class="opt"><input type="radio" name="frio" value="lento"> Forte/persistente, demora a passar (declínio lento)</label>
+    </div>
+  </div>
+  <div class="question">
+    <p class="q-text">3. Cárie profunda com exposição pulpar, restauração extensa ou trauma recente?</p>
+    <div class="options" data-group="carie">
+      <label class="opt"><input type="radio" name="carie" value="sim"> Sim</label>
+      <label class="opt"><input type="radio" name="carie" value="nao"> Não</label>
+    </div>
+  </div>
+  <div class="question">
+    <p class="q-text">4. Alteração de cor da coroa do dente?</p>
+    <div class="options" data-group="cor">
+      <label class="opt"><input type="radio" name="cor" value="sim"> Sim</label>
+      <label class="opt"><input type="radio" name="cor" value="nao"> Não</label>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">Exame periapical</div>
+  <div class="question">
+    <p class="q-text">5. Percussão vertical</p>
+    <div class="options" data-group="percussao">
+      <label class="opt"><input type="radio" name="percussao" value="negativa"> Negativa</label>
+      <label class="opt"><input type="radio" name="percussao" value="positiva"> Positiva</label>
+    </div>
+  </div>
+  <div class="question">
+    <p class="q-text">6. Palpação apical</p>
+    <div class="options" data-group="palpacao">
+      <label class="opt"><input type="radio" name="palpacao" value="negativa"> Negativa</label>
+      <label class="opt"><input type="radio" name="palpacao" value="positiva"> Positiva</label>
+    </div>
+  </div>
+  <div class="question">
+    <p class="q-text">7. Presença de pus ou fístula de drenagem?</p>
+    <div class="options" data-group="drenagem">
+      <label class="opt"><input type="radio" name="drenagem" value="nenhum"> Nenhum</label>
+      <label class="opt"><input type="radio" name="drenagem" value="pus"> Pus presente (sem fístula formada)</label>
+      <label class="opt"><input type="radio" name="drenagem" value="fistula"> Fístula de drenagem presente</label>
+    </div>
+  </div>
+  <div class="question">
+    <p class="q-text">8. Achado radiográfico periapical</p>
+    <div class="options" data-group="radiografia">
+      <label class="opt"><input type="radio" name="radiografia" value="normal"> Normal / sem alterações</label>
+      <label class="opt"><input type="radio" name="radiografia" value="espessamento"> Leve espessamento do ligamento</label>
+      <label class="opt"><input type="radio" name="radiografia" value="lesao"> Lesão radiolúcida (granuloma/cisto)</label>
+    </div>
+  </div>
+</div>
+
+<div id="result">
+  <h2>Diagnóstico provável</h2>
+  <div id="resultContent">
+    <div class="diag-card empty">Responda às perguntas acima para ver o resultado.</div>
+  </div>
+  <button class="reset-btn" onclick="resetAll()">Limpar respostas</button>
+  <p class="disclaimer">Ferramenta de apoio ao raciocínio clínico — sempre correlacione com o exame e julgamento do professor/orientador.</p>
+</div>
+
+<script>
+function getVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+function resetAll() {
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  document.querySelectorAll('label.opt').forEach(l => l.classList.remove('selected'));
+  evaluate();
+}
+
+function card(text, note, cls) {
+  return `<div class="diag-card ${cls}">${text}${note ? `<span class="note">${note}</span>` : ''}</div>`;
+}
+
+function evaluate() {
+  const dor = getVal('dorEspontanea');
+  const frio = getVal('frio');
+  const carie = getVal('carie');
+  const cor = getVal('cor');
+  const percussao = getVal('percussao');
+  const palpacao = getVal('palpacao');
+  const drenagem = getVal('drenagem');
+  const radiografia = getVal('radiografia');
+
+  let html = '';
+  let answered = [dor, frio, carie, cor, percussao, palpacao, drenagem, radiografia].some(v => v !== null);
+
+  if (!answered) {
+    document.getElementById('resultContent').innerHTML =
+      '<div class="diag-card empty">Responda às perguntas acima para ver o resultado.</div>';
+    return;
+  }
+
+  // ---- Pulpal diagnosis ----
+  let pulpal = null;
+  if (frio === 'ausente') {
+    pulpal = card('Necrose pulpar',
+      cor === 'sim' ? 'Reforçado pela alteração de cor da coroa. Avalie o periápice abaixo.' : 'Avalie o periápice abaixo.',
+      'c-necrose');
+  } else if (dor === 'sim') {
+    pulpal = card('Pulpite irreversível sintomática',
+      'Dor espontânea/intermitente é o critério decisivo. Conduta: tratamento endodôntico (pulpectomia).',
+      'c-irrev-s');
+  } else if (dor === 'nao' && frio === 'rapido') {
+    if (carie === 'sim') {
+      pulpal = card('Pulpite reversível',
+        'Resposta transitória ao frio associada a fator causal local. Conduta: remover o agente causal.',
+        'c-rev');
+    } else {
+      pulpal = card('Polpa normal', null, 'c-normal');
+    }
+  } else if (dor === 'nao' && frio === 'lento') {
+    if (carie === 'sim') {
+      pulpal = card('Pulpite irreversível assintomática',
+        'Cárie profunda com exposição pulpar, sem dor espontânea.',
+        'c-irrev-a');
+    } else {
+      pulpal = card('Possível pulpite irreversível',
+        'Resposta ao frio com declínio lento, sem dor espontânea. Reavalie achados adicionais.',
+        'c-warn');
+    }
+  }
+
+  if (pulpal) html += pulpal;
+  else html += card('Status pulpar inconclusivo', 'Responda às perguntas 1 e 2 para definir.', 'c-warn');
+
+  // ---- Periapical diagnosis ----
+  let periapical = null;
+  if (drenagem === 'fistula') {
+    periapical = card('Abscesso apical crônico', 'Fístula de drenagem já estabelecida.', 'c-periapical');
+  } else if (drenagem === 'pus') {
+    periapical = card('Abscesso apical agudo', 'Presença de pus, com dor associada.', 'c-periapical');
+  } else if (percussao === 'positiva' || palpacao === 'positiva') {
+    if (dor === 'sim') {
+      periapical = card('Periodontite apical sintomática', 'Percussão/palpação positiva + dor presente.', 'c-periapical');
+    } else if (radiografia === 'lesao') {
+      periapical = card('Periodontite apical crônica / assintomática', 'Percussão/palpação positiva + lesão radiográfica, sem dor espontânea.', 'c-periapical');
+    } else {
+      periapical = card('Possível alteração periapical', 'Percussão/palpação positiva — correlacione com radiografia e demais sinais.', 'c-warn');
+    }
+  } else if (radiografia === 'lesao') {
+    periapical = card('Periodontite apical crônica / assintomática', 'Lesão radiolúcida (granuloma/cisto), sem sinais clínicos agudos.', 'c-periapical');
+  } else if (radiografia === 'espessamento') {
+    periapical = card('Possível alteração inicial do ligamento periapical', 'Acompanhar evolução.', 'c-warn');
+  } else if (percussao === 'negativa' && palpacao === 'negativa' && (radiografia === 'normal' || radiografia === null)) {
+    periapical = card('Tecidos periapicais aparentemente normais', null, 'c-normal');
+  }
+
+  if (periapical) html += periapical;
+
+  document.getElementById('resultContent').innerHTML = html;
+}
+
+document.querySelectorAll('input[type=radio]').forEach(input => {
+  input.addEventListener('change', () => {
+    // update visual selection within the same group
+    const group = input.name;
+    document.querySelectorAll(`input[name="${group}"]`).forEach(r => {
+      r.closest('label').classList.toggle('selected', r.checked);
+    });
+    evaluate();
+  });
+});
+</script>
+
+</body>
+</html>
